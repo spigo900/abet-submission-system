@@ -1,7 +1,7 @@
 const Portfolio = require('../models/CoursePortfolio')
 const Course = require('../models/Course')
-const StudentLearningOutcome = require('../models/StudentLearningOutcome')
-const Term = require('../models/Term')
+const PortfolioSLO = require('../models/CoursePortfolio/StudentLearningOutcome')
+const { transaction } = require('objection')
 
 module.exports.new = async ({
 	department_id,
@@ -23,6 +23,7 @@ module.exports.new = async ({
 		throw Error(`you entered a bad course! dept_id=${department_id}, course_number=${course_number} is not a real course!`)
 	}
 
+	// TODO: do this as a transaction (I don't know how)
 	const new_portfolio = await Portfolio.query()
 		.debug('enabled')
 		.insert({
@@ -34,8 +35,13 @@ module.exports.new = async ({
 			year: parseInt(year)
 		});
 	
-	for (slo of student_learning_outcomes) {
-		
+	// add SLOs
+	for (slo_id of student_learning_outcomes) {
+		await new_portfolio.$relatedQuery('outcomes')
+			.insert({
+				portfolio_id: new_portfolio.id,
+				slo_id: parseInt(slo_id)
+			});
 	}
 
 	return new_portfolio;
