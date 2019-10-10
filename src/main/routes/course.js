@@ -4,6 +4,9 @@ var html = require('../common/html')
 var course_portfolio_lib = require('../lib/course_portfolio')
 var router = express.Router();
 
+
+const Artifact = require('../models/CoursePortfolio/Artifact/index')
+
 const Department = require('../models/Department')
 const TermType = require('../models/TermType')
 
@@ -107,9 +110,15 @@ const course_new_page = async (res, department = false) => {
 /* GET course home page */
 router.route('/')
 	.get(html.auth_wrapper(async (req, res, next) => {
+		const artifacts_active=  await Artifact.query().eager('[evaluations, owner.owner.[semester,owner.owner]]');
+		console.log("HEY")
+		console.log(artifacts_active[0]);
+		//console.log(course_portfolios_active[0].slo);
 		res.render('base_template', {
 			title: 'Course Portfolios',
-			body: mustache.render('course/index')
+			body: mustache.render('course/index',
+				{
+				'artifacts_active': artifacts_active})
 		})
 	}))
 
