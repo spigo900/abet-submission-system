@@ -1,4 +1,7 @@
 const Portfolio = require('../models/CoursePortfolio')
+const Course = require('../models/Course')
+const StudentLearningOutcome = require('../models/StudentLearningOutcome')
+const Term = require('../models/Term')
 
 module.exports.new = async ({
 	department_id,
@@ -11,9 +14,31 @@ module.exports.new = async ({
 	section
 }) => {
 	// TODO
-	return {
-		id: 'todo'
-	};
+	let course = await Course.query()
+		.where('department_id', department_id)
+		.where('number', course_number)
+		.first();
+	// TODO: better way?
+	if (!course) {
+		throw Error(`you entered a bad course! dept_id=${department_id}, course_number=${course_number} is not a real course!`)
+	}
+
+	const new_portfolio = await Portfolio.query()
+		.debug('enabled')
+		.insert({
+			course_id: parseInt(course.id),
+			instructor_id: parseInt(instructor),
+			semester_term_id: parseInt(semester),
+			num_students: parseInt(num_students),
+			section: parseInt(section),
+			year: parseInt(year)
+		});
+	
+	for (slo of student_learning_outcomes) {
+		
+	}
+
+	return new_portfolio;
 }
 
 
