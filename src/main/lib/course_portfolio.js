@@ -11,6 +11,14 @@ const BadCourseError = function(message, extra) {
 }
 module.exports.BadCourseError = BadCourseError
 
+const _findCourseByNumber = async (department_id, course_number) => {
+	return Course.query()
+		.where('department_id', department_id)
+		.where('number', course_number)
+		.first()
+}
+module.exports._findCourseByNumber = _findCourseByNumber
+
 module.exports.new = async ({
 	department_id,
 	course_number,
@@ -22,12 +30,8 @@ module.exports.new = async ({
 	section
 }) => {
 	// TODO
-	let course = await Course.query()
-		.where('department_id', department_id)
-		.where('number', course_number)
-		.first()
 	// TODO: better way?
-	console.error('got to -1')
+	let course = await _findCourseByNumber(department_id, course_number)
 	if (!course) {
 		throw new BadCourseError(
 			`you entered a bad course! dept_id=${department_id}, ` +
@@ -44,10 +48,8 @@ module.exports.new = async ({
 	// TODO: I could do the "find the correct SLOs" logic cleaner.
 	let trx
 	let new_portfolio
-	console.error('got to 0')
 	try {
 		trx = await transaction.start(Portfolio.knex())
-		console.error('got to 1')
 		new_portfolio = await Portfolio.query(trx)
 			.insert({
 				course_id: parseInt(course.id),
@@ -57,14 +59,12 @@ module.exports.new = async ({
 				section: parseInt(section),
 				year: parseInt(year)
 			})
-			console.error('got to 2')
 
 		// Add SLOs to the database.
 		for (slo_index of student_learning_outcomes) {
 			let slo = await StudentLearningOutcome.query()
 				.where('index', parseInt(slo_index))
 				.first()
-			console.error('got to 3...')
 			
 			await new_portfolio.$relatedQuery('outcomes', trx)
 				.insert({
