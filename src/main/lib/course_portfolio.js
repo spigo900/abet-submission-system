@@ -3,12 +3,13 @@ const Course = require('../models/Course')
 const StudentLearningOutcome = require('../models/StudentLearningOutcome')
 const { transaction } = require('objection')
 
-module.exports.BadCourseError = function(message, extra) {
+const BadCourseError = function(message, extra) {
 	Error.captureStackTrace(this, this.constructor)
 	this.name = this.constructor.name
 	this.message = message
 	this.extra = extra
 }
+module.exports.BadCourseError = BadCourseError
 
 module.exports.new = async ({
 	department_id,
@@ -26,11 +27,12 @@ module.exports.new = async ({
 		.where('number', course_number)
 		.first()
 	// TODO: better way?
+	console.error('got to -1')
 	if (!course) {
 		throw new BadCourseError(
-			`you entered a bad course! dept_id=${department_id}, `
+			`you entered a bad course! dept_id=${department_id}, ` +
 			`course_number=${course_number} is not a real course!`,
-			{department_id, course_number}
+			{department_id: department_id, course_number: course_number}
 		)
 	}
 
@@ -42,8 +44,10 @@ module.exports.new = async ({
 	// TODO: I could do the "find the correct SLOs" logic cleaner.
 	let trx
 	let new_portfolio
+	console.error('got to 0')
 	try {
 		trx = await transaction.start(Portfolio.knex())
+		console.error('got to 1')
 		new_portfolio = await Portfolio.query(trx)
 			.insert({
 				course_id: parseInt(course.id),
@@ -53,12 +57,14 @@ module.exports.new = async ({
 				section: parseInt(section),
 				year: parseInt(year)
 			})
+			console.error('got to 2')
 
 		// Add SLOs to the database.
 		for (slo_index of student_learning_outcomes) {
 			let slo = await StudentLearningOutcome.query()
 				.where('index', parseInt(slo_index))
 				.first()
+			console.error('got to 3...')
 			
 			await new_portfolio.$relatedQuery('outcomes', trx)
 				.insert({
@@ -69,8 +75,8 @@ module.exports.new = async ({
 
 		trx.commit()
 	} catch (err) {
-		// TODO: Do more than just roll this back! Raise the error or something so that it's not a silent error! Silent errors are death!
 		trx.rollback()
+		throw new Error("Portfolio creation failed!")
 	}
 
 	return new_portfolio;
