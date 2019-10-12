@@ -184,6 +184,7 @@ describe('Lib - CoursePortfolio', () => {
 					mock3.verify() &&
 					mock4.verify()))
 		})
+	})
 
 	describe('get', () => {
 
