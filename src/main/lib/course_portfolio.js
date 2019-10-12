@@ -19,6 +19,14 @@ const _findCourseByNumber = async (department_id, course_number) => {
 }
 module.exports._findCourseByNumber = _findCourseByNumber
 
+const _findSLOByIndex = async (department_id, slo_index) => {
+	return StudentLearningOutcome.query()
+		.where('department_id', department_id)
+		.where('index', parseInt(slo_index))
+		.first()
+}
+module.exports._findSLOByIndex = _findSLOByIndex
+
 module.exports.new = async ({
 	department_id,
 	course_number,
@@ -62,9 +70,7 @@ module.exports.new = async ({
 
 		// Add SLOs to the database.
 		for (slo_index of student_learning_outcomes) {
-			let slo = await StudentLearningOutcome.query()
-				.where('index', parseInt(slo_index))
-				.first()
+			let slo = await _findSLOByIndex(department_id, slo_index)
 			
 			await new_portfolio.$relatedQuery('outcomes', trx)
 				.insert({
