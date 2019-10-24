@@ -125,6 +125,7 @@ describe('Lib - CoursePortfolio', () => {
 				return mock
 			})())
 
+			// It should start a transaction and then roll it back.
 			const mock_trx = {rollback: sinon.spy()}
 			const mock3 = sinon.mock(transaction)
 			mock3.expects('start').returns(mock_trx)
