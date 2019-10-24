@@ -7,18 +7,14 @@ const course_portfolio = require('../../../main/lib/course_portfolio')
 const { expect } = require('../../chai')
 const sinon = require('sinon')
 
-// const sandbox = sinon.createSandbox()
+const sandbox = sinon.createSandbox()
 
 describe('Lib - CoursePortfolio', () => {
 
 	describe('new', () => {
 
-		beforeEach(() => {
-			sinon.createSandbox()
-		})
-
 		afterEach(() => {
-			sinon.restore()
+			sandbox.restore()
 		})
 
 		it('with mocks, valid course info', async () => {
