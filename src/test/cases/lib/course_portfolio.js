@@ -7,6 +7,8 @@ const course_portfolio = require('../../../main/lib/course_portfolio')
 const { expect } = require('../../chai')
 const sinon = require('sinon')
 
+// const sandbox = sinon.createSandbox()
+
 describe('Lib - CoursePortfolio', () => {
 
 	describe('new', () => {
@@ -26,7 +28,7 @@ describe('Lib - CoursePortfolio', () => {
 			const semester = 1
 			const year = "2019"
 			const num_students = 4
-			const student_learning_outcomes = ["2"]
+			const student_learning_outcomes = ["1"]
 			const section = 211
 
 			const mock1 = sinon.mock(Course)
@@ -48,16 +50,8 @@ describe('Lib - CoursePortfolio', () => {
 				return mock
 			})())
 
-			const mock3 = sinon.mock(StudentLearningOutcome)
-			mock3.expects('query').returns((() => {
-				const mock = {}
-				mock.where = () => mock
-				mock.first = () => ({id: 1, number: course_number})
-				return mock
-			})())
-
-			const mock4 = sinon.mock(transaction)
-			mock4.expects('start').returns((() => {
+			const mock3 = sinon.mock(transaction)
+			mock3.expects('start').returns((() => {
 				const mock = {}
 				mock.commit = () => {}
 				return Promise.resolve(mock)
@@ -78,27 +72,6 @@ describe('Lib - CoursePortfolio', () => {
 			mock1.verify()
 			mock2.verify()
 			mock3.verify()
-			mock4.verify()
-
-			/*
-			const result = await Portfolio.query().findById(portfolio.id)
-			expect(result).to.exist
-
-			const outcome_relations = await portfolio.$relatedQuery('outcomes').where('portfolio_id', portfolio.id)
-			// TODO: does this do what I wanted it to do?
-			// Every student learning outcome index should generate a portfolio-SLO relation.
-			for (slo_index of student_learning_outcomes) {
-				parsed = parseInt(slo_index)
-				const slo = await StudentLearningOutcome.query().where('index', parsed).first()
-				expect(slo.index).to.equal(parsed)
-			}
-			// Every portfolio-SLO relation should come from a student learning outcome index.
-			for (outcome_relation of outcome_relations) {
-				const slo = await StudentLearningOutcome.query().where('id', outcome_relation.slo_id).first()
-				expect(student_learning_outcomes.map(parseInt)).to.include(slo.index)
-			}
-			*/
-
 		})
 
 		it('with mocks, invalid course number', async () => {
@@ -109,22 +82,14 @@ describe('Lib - CoursePortfolio', () => {
 				semester: 1,
 				year: "2019",
 				num_students: 4,
-				student_learning_outcomes: ["2"],
+				student_learning_outcomes: ["1"],
 				section: 2
 			}
 
-			const mock1 = sinon.mock(Course)
-			const fake_querybuilder = {}
-			fake_querybuilder.where = () => fake_querybuilder
-			fake_querybuilder.first = () => undefined
-			mock1.expects('query').returns(fake_querybuilder)
+			sinon.stub(course_portfolio, '_findCourseByNumber').returns(undefined)
 
-			return (expect(course_portfolio.new(portfolio_details))
-				.to.eventually.be.rejectedWith(course_portfolio.BadCourseError)
-				.then(() => {}, (_err) => {
-					mock1.verify()
-				})
-				)
+			await (expect(course_portfolio.new(portfolio_details))
+				.to.eventually.be.rejectedWith(course_portfolio.BadCourseError))
 		})
 
 		it('with mocks, invalid SLOs', () => {
@@ -160,29 +125,16 @@ describe('Lib - CoursePortfolio', () => {
 				return mock
 			})())
 
-			const mock3 = sinon.mock(StudentLearningOutcome)
-			// mock3.query = sinon.fake().returns()
-			mock3.expects('query').returns((() => {
-				mock = {}
-				mock.where = () => mock
-				mock.first = () => undefined
-				return mock
-			})())
+			const mock_trx = {rollback: sinon.spy()}
+			const mock3 = sinon.mock(transaction)
+			mock3.expects('start').returns(mock_trx)
 
-			const mock4 = sinon.mock(transaction)
-			mock4.expects('start').returns((() => {
-				const mock = {}
-				mock.rollback = () => {}
-				return Promise.resolve(mock)
-			})())
-
-			console.error('test 3')
 			return (expect(course_portfolio.new(portfolio_details))
-				.to.eventually.be.rejected.and.then(() => {}, (_err) =>
+				.to.eventually.be.rejectedWith(Error).and.then(() => {}, (_err) =>
 					mock1.verify() &&
 					mock2.verify() &&
 					mock3.verify() &&
-					mock4.verify()))
+					mock_trx.rollback.calledOnce))
 		})
 	})
 

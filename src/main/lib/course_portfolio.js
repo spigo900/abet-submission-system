@@ -1,15 +1,14 @@
 const Portfolio = require('../models/CoursePortfolio')
 const Course = require('../models/Course')
-const StudentLearningOutcome = require('../models/StudentLearningOutcome')
 const { transaction } = require('objection')
 
-const BadCourseError = function(message, extra) {
-	Error.captureStackTrace(this, this.constructor)
-	this.name = this.constructor.name
-	this.message = message
-	this.extra = extra
+module.exports.BadCourseError = class BadCourseError extends Error {
+	constructor(message, extra) {
+		super(message, extra)
+		this.name = this.constructor.name
+		Error.captureStackTrace(this, this.constructor)
+	}
 }
-module.exports.BadCourseError = BadCourseError
 
 const _findCourseByNumber = async (department_id, course_number) => {
 	return Course.query()
@@ -19,14 +18,6 @@ const _findCourseByNumber = async (department_id, course_number) => {
 }
 module.exports._findCourseByNumber = _findCourseByNumber
 
-const _findSLOByIndex = async (department_id, slo_index) => {
-	return StudentLearningOutcome.query()
-		.where('department_id', department_id)
-		.where('index', parseInt(slo_index))
-		.first()
-}
-module.exports._findSLOByIndex = _findSLOByIndex
-
 module.exports.new = async ({
 	department_id,
 	course_number,
@@ -34,14 +25,13 @@ module.exports.new = async ({
 	semester,
 	year,
 	num_students,
-	student_learning_outcomes,
+	student_learning_outcomes,  // Note that these are SLO IDs, *not* indices!
 	section
 }) => {
-	// TODO
 	// TODO: better way?
 	let course = await _findCourseByNumber(department_id, course_number)
 	if (!course) {
-		throw new BadCourseError(
+		throw new module.exports.BadCourseError(
 			`you entered a bad course! dept_id=${department_id}, ` +
 			`course_number=${course_number} is not a real course!`,
 			{department_id: department_id, course_number: course_number}
@@ -69,20 +59,18 @@ module.exports.new = async ({
 			})
 
 		// Add SLOs to the database.
-		for (slo_index of student_learning_outcomes) {
-			let slo = await _findSLOByIndex(department_id, slo_index)
-			
+		for (let slo_id of student_learning_outcomes) {
 			await new_portfolio.$relatedQuery('outcomes', trx)
 				.insert({
 					portfolio_id: new_portfolio.id,
-					slo_id: slo.id
+					slo_id: parseInt(slo_id)
 				})
 		}
 
 		trx.commit()
 	} catch (err) {
 		trx.rollback()
-		throw new Error("Portfolio creation failed!")
+		throw new Error("Portfolio creation failed!", err)
 	}
 
 	return new_portfolio;
