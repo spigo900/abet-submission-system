@@ -88,3 +88,7 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+
+# Vim
+*.swp

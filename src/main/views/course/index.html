@@ -7,7 +7,7 @@
 	<section class="active_courses">
 		<h2>Active Courses <i class="material-icons">help</i></h2>
 		<table>
-			<tr>
+			<tr>				
 				<th>Course</th>
 				<th>Semester</th>
 				<th>Year</th>
@@ -15,22 +15,21 @@
 				<th>Due Date</th>
 				<th></th>
 			</tr>
+			{{#artifacts_active}}
+			{{#artifact}}
 			<tr>
-				<td>CS498</td>
-				<td>Fall</td>
-				<td>2019</td>
-				<td>8 / 12</td>
-				<td>Dec 5, 2019</td>
-				<td><a href="/course/123">edit <i class="material-icons">edit</i></a></td>
+				<td><span class="uppercase">{{owner.owner.owner.owner.identifier}}</span>
+					{{owner.owner.owner.number}}</td>
+				<td><span class="capitalize">{{owner.owner.semester.value}}</span></td>
+				<td>{{owner.owner.year}}</td>
+				<td>{{evaluations.length}}</td>
+				{{#owner.owner.expireDate}}
+				<td>{{formatDate}}</td>
+				{{/owner.owner.expireDate}}
+				<td><a href="/course/{{id}}">edit <i class="material-icons">edit</i></a></td>
 			</tr>
-			<tr>
-				<td>CS499</td>
-				<td>Fall</td>
-				<td>2019</td>
-				<td>12 / 12</td>
-				<td>Dec 5, 2019</td>
-				<td><a href="/course/123">edit <i class="material-icons">edit</i></a></td>
-			</tr>
+			{{/artifact}}
+			{{/artifacts_active}}
 		</table>
 	</section>
 	<section class="archived_courses">

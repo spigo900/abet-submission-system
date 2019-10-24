@@ -2,7 +2,9 @@ module.exports = {
   development: {
     client: 'postgresql',
     connection: {
-      database: 'abet_system_dev'
+      database: 'abet_system_dev',
+      user: 'postgres',
+      password: 'password'
     },
     migrations: {
       directory: './src/main/migrations'
