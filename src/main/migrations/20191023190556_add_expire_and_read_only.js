@@ -3,8 +3,7 @@ exports.up = function(knex) {
 	return Promise.all([
 		knex.schema.table('portfolio', function(table) {
 			table.datetime('expireDate')
-			table.boolean('readOnly')
-		
+			table.boolean('readOnly')		
 		})
 	]);
 };

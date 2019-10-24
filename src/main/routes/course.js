@@ -113,8 +113,7 @@ router.route('/')
 		const artifacts_active 			=  
 			{ artifact: await Artifact.query().eager('[evaluations, owner.owner.[semester,owner.owner]]'),
 			  formatDate:function(){
-			 	return this.toLocaleString('default', {month: 'short', day: 'numeric', year : 'numeric' } ); 
-			  
+			 	return this.toLocaleString('default', {month: 'short', day: 'numeric', year: 'numeric'} ); 			  
 			  }
 			}
 		res.render('base_template', {
