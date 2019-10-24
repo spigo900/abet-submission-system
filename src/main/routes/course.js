@@ -110,10 +110,17 @@ const course_new_page = async (res, department = false) => {
 /* GET course home page */
 router.route('/')
 	.get(html.auth_wrapper(async (req, res, next) => {
-		const artifacts_active=  await Artifact.query().eager('[evaluations, owner.owner.[semester,owner.owner]]');
-		console.log("HEY")
-		console.log(artifacts_active[0]);
-		//console.log(course_portfolios_active[0].slo);
+		const artifacts_active 			=  
+			{ arti : await Artifact.query().eager('[evaluations, owner.owner.[semester,owner.owner]]'),
+			  formatDate:function(){
+			 	console.log(this)
+			 	return this.toLocaleString('default', {month: 'short', day: 'numeric', year : 'numeric' } ); 
+			  
+			  }
+			}
+		// console.log("HEY")
+		// console.log(artifacts_active);
+		// console.log(course_portfolios_active[0].slo);
 		res.render('base_template', {
 			title: 'Course Portfolios',
 			body: mustache.render('course/index',

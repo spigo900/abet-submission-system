@@ -17,15 +17,20 @@
 				<th></th>
 			</tr>
 			{{#artifacts_active}}
+				{{#arti}}
 			<tr>
 				<td><span class="uppercase">{{owner.owner.owner.owner.identifier}}</span>
 					{{owner.owner.owner.number}}</td>
 				<td><span class="capitalize">{{owner.owner.semester.value}}</span></td>
 				<td>{{owner.owner.year}}</td>
 				<td>{{evaluations.length}}</td>
-				<td>{{owner.owner.year}}</td>
+				{{#owner.owner.expireDate}}
+				<td>{{formatDate}}</td>
+				{{/owner.owner.expireDate}}
 				<td><a href="/course/{{id}}">edit <i class="material-icons">edit</i></a></td>
 			</tr>
+
+				{{/arti}}
 			{{/artifacts_active}}
 		</table>
 	</section>

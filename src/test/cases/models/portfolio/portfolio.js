@@ -16,7 +16,10 @@ describe('Model - CoursePortfolio', () => {
 				semester_term_id: 1,
 				num_students: 5,
 				section: 1,
-				year: 2019
+				year: 2019,
+				expireDate: new Date(Date.parse("2019-12-24T05:00:00.000Z")),
+				readOnly: 0,
+				
 			})
 		})
 
