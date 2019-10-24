@@ -28,7 +28,6 @@ module.exports.new = async ({
 	student_learning_outcomes,  // Note that these are SLO IDs, *not* indices!
 	section
 }) => {
-	// TODO: better way?
 	let course = await _findCourseByNumber(department_id, course_number)
 	if (!course) {
 		throw new module.exports.BadCourseError(
@@ -43,7 +42,6 @@ module.exports.new = async ({
 	// portfolio to the database. For example, if one of the SLO indices
 	// passed in doesn't refer to a real SLO, we don't want to commit a
 	// partial portfolio.
-	// TODO: I could do the "find the correct SLOs" logic cleaner.
 	let trx
 	let new_portfolio
 	try {
