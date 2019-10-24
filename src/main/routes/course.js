@@ -113,14 +113,10 @@ router.route('/')
 		const artifacts_active 			=  
 			{ arti : await Artifact.query().eager('[evaluations, owner.owner.[semester,owner.owner]]'),
 			  formatDate:function(){
-			 	console.log(this)
 			 	return this.toLocaleString('default', {month: 'short', day: 'numeric', year : 'numeric' } ); 
 			  
 			  }
 			}
-		// console.log("HEY")
-		// console.log(artifacts_active);
-		// console.log(course_portfolios_active[0].slo);
 		res.render('base_template', {
 			title: 'Course Portfolios',
 			body: mustache.render('course/index',
