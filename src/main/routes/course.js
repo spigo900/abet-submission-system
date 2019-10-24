@@ -111,7 +111,7 @@ const course_new_page = async (res, department = false) => {
 router.route('/')
 	.get(html.auth_wrapper(async (req, res, next) => {
 		const artifacts_active 			=  
-			{ arti : await Artifact.query().eager('[evaluations, owner.owner.[semester,owner.owner]]'),
+			{ artifact: await Artifact.query().eager('[evaluations, owner.owner.[semester,owner.owner]]'),
 			  formatDate:function(){
 			 	return this.toLocaleString('default', {month: 'short', day: 'numeric', year : 'numeric' } ); 
 			  
