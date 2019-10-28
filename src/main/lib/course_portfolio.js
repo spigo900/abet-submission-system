@@ -72,7 +72,6 @@ module.exports.new = async ({
 		trx.commit()
 	} catch (err) {
 		trx.rollback()
-		console.error(err)
 		throw err
 	}
 
