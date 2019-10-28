@@ -113,7 +113,7 @@ exports.up = knex => {
 			table.integer('year')
 				.unsigned()
 				.notNullable()
-			table.unique('course_id', 'section', 'semester_term_id', 'year')
+			table.unique(['course_id', 'section', 'semester_term_id', 'year'])
 		})
 		.createTable('portfolio_slo', table => {
 			table.increments('id')
