@@ -18,14 +18,14 @@
 			{{#artifacts_active}}
 			{{#artifact}}
 			<tr>
-				<td><span class="uppercase">{{owner.owner.owner.owner.identifier}}</span>
-					{{owner.owner.owner.number}}</td>
+				<td><span class="uppercase">{{owner.owner.course.department.identifier}}</span>
+					{{owner.owner.course.number}}</td>
 				<td><span class="capitalize">{{owner.owner.semester.value}}</span></td>
 				<td>{{owner.owner.year}}</td>
 				<td>{{evaluations.length}}</td>
-				{{#owner.owner.expireDate}}
+				{{#owner.owner.expire_date}}
 				<td>{{formatDate}}</td>
-				{{/owner.owner.expireDate}}
+				{{/owner.owner.expire_date}}
 				<td><a href="/course/{{id}}">edit <i class="material-icons">edit</i></a></td>
 			</tr>
 			{{/artifact}}

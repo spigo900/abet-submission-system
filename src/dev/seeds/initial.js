@@ -150,8 +150,8 @@ exports.seed = knex => Promise.resolve((async () => {
 			num_students: 5,
 			section: 1,
 			year: 2019,
-			expireDate: '2019-12-24-T00:00:00',
-			readOnly: false,
+			expire_date: '2019-12-24-T00:00:00',
+			read_only: false,
 		}
 	])
 	await knex('portfolio_slo').insert([
