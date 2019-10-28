@@ -10,6 +10,9 @@ const Artifact = require('../models/CoursePortfolio/Artifact/index')
 const Department = require('../models/Department')
 const TermType = require('../models/TermType')
 
+const DEFAULT_PORTFOLIO_EXPIRE_DATE = '2019-12-24'
+const DEFAULT_PORTFOLIO_READ_ONLY_STATUS = false
+
 const course_manage_page = async (res, course_id) => {
 	let course_info = {
 		student_learning_outcomes: [
@@ -146,7 +149,10 @@ router.route('/:id')
 					student_learning_outcomes: Object.entries(req.body)
 						.filter(entry => entry[0].startsWith('slo_') && entry[1] === 'on')
 						.map(entry => entry[0].split('_')[1]),
-					section: req.body.course_section
+					section: req.body.course_section,
+					// There's not yet a field on the form for this, so just use a default value.
+					expire_date: new Date(Date.parse(DEFAULT_PORTFOLIO_EXPIRE_DATE)),
+					read_only: DEFAULT_PORTFOLIO_READ_ONLY_STATUS
 				})
 
 				res.redirect(302, `/course/${course_portfolio.id}`)

@@ -26,7 +26,9 @@ module.exports.new = async ({
 	year,
 	num_students,
 	student_learning_outcomes,  // Note that these are SLO IDs, *not* indices!
-	section
+	section,
+	expire_date,
+	read_only
 }) => {
 	let course = await _findCourseByNumber(department_id, course_number)
 	if (!course) {
@@ -53,7 +55,9 @@ module.exports.new = async ({
 				semester_term_id: parseInt(semester),
 				num_students: parseInt(num_students),
 				section: parseInt(section),
-				year: parseInt(year)
+				year: parseInt(year),
+				expire_date: expire_date,
+				read_only: read_only
 			})
 
 		// Add SLOs to the database.
@@ -68,7 +72,8 @@ module.exports.new = async ({
 		trx.commit()
 	} catch (err) {
 		trx.rollback()
-		throw new Error("Portfolio creation failed!", err)
+		console.error(err)
+		throw err
 	}
 
 	return new_portfolio;
