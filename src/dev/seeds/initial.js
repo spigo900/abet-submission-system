@@ -152,12 +152,44 @@ exports.seed = knex => Promise.resolve((async () => {
 			year: 2019,
 			expire_date: '2019-12-24-T00:00:00',
 			read_only: false,
+		},
+		{
+			id: 2,
+			course_id: 1,
+			instructor_id: 1,
+			semester_term_id: 1,
+			num_students: 3,
+			section: 2,
+			year: 2019,
+			expire_date: '2019-12-23-T00:00:00',
+			read_only: false,
+		},
+		{
+			id: 3,
+			course_id: 1,
+			instructor_id: 1,
+			semester_term_id: 1,
+			num_students: 2,
+			section: 3,
+			year: 2019,
+			expire_date: '2019-12-23-T00:00:00',
+			read_only: false,
 		}
 	])
 	await knex('portfolio_slo').insert([
 		{
 			id: 1,
 			portfolio_id: 1,
+			slo_id: 1
+		},
+		{
+			id: 2,
+			portfolio_id: 2,
+			slo_id: 1
+		},
+		{
+			id: 3,
+			portfolio_id: 3,
 			slo_id: 1
 		}
 	])
@@ -177,8 +209,39 @@ exports.seed = knex => Promise.resolve((async () => {
 			portfolio_slo_id: 1,
 			index: 3
 		},
+		{
+			id: 4,
+			portfolio_slo_id: 2,
+			index: 1
+		},
+		{
+			id: 5,
+			portfolio_slo_id: 2,
+			index: 2
+		},
+		{
+			id: 6,
+			portfolio_slo_id: 3,
+			index: 1
+		},
+		{
+			id: 7,
+			portfolio_slo_id: 3,
+			index: 2
+		},
+		{
+			id: 8,
+			portfolio_slo_id: 3,
+			index: 3
+		},
+		{
+			id: 9,
+			portfolio_slo_id: 3,
+			index: 4
+		},
 	])
 	await knex('artifact_evaluation').insert([
+		// Course 1
 		/* ARTIFACT 1 */
 		{
 			id: 1,
@@ -271,6 +334,104 @@ exports.seed = knex => Promise.resolve((async () => {
 			artifact_id: 3,
 			evaluation_index: 5,
 			student_index: 5
+		},
+		// Course 2
+		/* ARTIFACT 1 */
+		{
+			id: 16,
+			artifact_id: 4,
+			evaluation_index: 1,
+			student_index: 1
+		},
+		{
+			id: 17,
+			artifact_id: 4,
+			evaluation_index: 2,
+			student_index: 2
+		},
+		{
+			id: 18,
+			artifact_id: 4,
+			evaluation_index: 3,
+			student_index: 3
+		},
+		/* ARTIFACT 2 */
+		{
+			id: 21,
+			artifact_id: 5,
+			evaluation_index: 1,
+			student_index: 1
+		},
+		{
+			id: 22,
+			artifact_id: 5,
+			evaluation_index: 2,
+			student_index: 2
+		},
+		{
+			id: 23,
+			artifact_id: 5,
+			evaluation_index: 3,
+			student_index: 3
+		},
+		// Course 3
+		/* ARTIFACT 1 */
+		{
+			id: 24,
+			artifact_id: 6,
+			evaluation_index: 1,
+			student_index: 1
+		},
+		{
+			id: 25,
+			artifact_id: 6,
+			evaluation_index: 2,
+			student_index: 2
+		},
+		/* ARTIFACT 2 */
+		{
+			id: 26,
+			artifact_id: 7,
+			evaluation_index: 1,
+			student_index: 1
+		},
+		{
+			id: 27,
+			artifact_id: 7,
+			evaluation_index: 2,
+			student_index: 2
+		},
+		/* ARTIFACT 3 */
+		{
+			id: 28,
+			artifact_id: 8,
+			evaluation_index: 1,
+			student_index: 1
+		},
+		{
+			id: 29,
+			artifact_id: 8,
+			evaluation_index: 2,
+			student_index: 2
+		},
+		/* ARTIFACT 4 */
+		{
+			id: 30,
+			artifact_id: 9,
+			evaluation_index: 1,
+			student_index: 1
+		},
+		{
+			id: 31,
+			artifact_id: 9,
+			evaluation_index: 2,
+			student_index: 2
 		}
 	])
+
+	await knex.raw('ALTER SEQUENCE course_id_seq RESTART WITH 2')
+	await knex.raw('ALTER SEQUENCE portfolio_id_seq RESTART WITH 3')
+	await knex.raw('ALTER SEQUENCE portfolio_slo_id_seq RESTART WITH 3')
+	await knex.raw('ALTER SEQUENCE artifact_id_seq RESTART WITH 10')
+	await knex.raw('ALTER SEQUENCE artifact_evaluation_id_seq RESTART WITH 32')
 })())
