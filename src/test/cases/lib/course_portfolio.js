@@ -11,7 +11,112 @@ const sinon = require('sinon')
 const sandbox = sinon.createSandbox();
 
 describe('Lib - CoursePortfolio', () => {
-
+	// Save variable for reuse
+	let portfolio_big = {
+				"id": 1,
+				"course_id": 1,
+				"instructor_id": 1,
+				"semester_term_id": 1,
+				"num_students": 5,
+				"section": 1,
+				"year": 2019,
+				"expire_date": new Date(Date.parse('2019-12-34')),
+				"read_only": false,
+				"course": {
+					"id": 1,
+					"department_id": 1,
+					"number": 498,
+					"department": {
+						"id": 1,
+						"identifier": "cs",
+						"name": "Computer Science"
+					}
+				},
+				"instructor": {
+					"id": 1,
+					"linkblue_username": "user"
+				},
+				"semester": {
+					"id": 1,
+					"type": 1,
+					"value": "fall"
+				},
+				"outcomes": [
+					{
+						"id": 1,
+						"portfolio_id": 1,
+						"slo_id": 1,
+						"slo": {
+							"id": 1,
+							"department_id": 1,
+							"index": 2,
+							"description": "Design, implement, and evaluate a computing-based solution to meet a given set of computing requirements in the context of the program's discipline.",
+							"metrics": [
+								{
+									"id": 1,
+									"slo_id": 1,
+									"index": 1,
+									"name": "Identify and interpret client needs and design constraints",
+									"exceeds": "n/a",
+									"meets": "n/a",
+									"partially": "n/a",
+									"not": "n/a"
+								}
+							]
+						},
+						"artifacts": [
+							{
+								"id": 1,
+								"portfolio_slo_id": 1,
+								"index": 1,
+								"name": "_unset_",
+								"evaluations": [
+									{
+										"id": 1,
+										"artifact_id": 1,
+										"evaluation_index": 1,
+										"student_index": 1,
+										"evaluation": [],
+										"file": null
+									}
+								]
+							},
+							{
+								"id": 2,
+								"portfolio_slo_id": 1,
+								"index": 2,
+								"name": "_unset_",
+								"evaluations": [
+									{
+										"id": 6,
+										"artifact_id": 2,
+										"evaluation_index": 1,
+										"student_index": 1,
+										"evaluation": [],
+										"file": null
+									}
+								]
+							},
+							{
+								"id": 3,
+								"portfolio_slo_id": 1,
+								"index": 3,
+								"name": "_unset_",
+								"evaluations": [
+									{
+										"id": 11,
+										"artifact_id": 3,
+										"evaluation_index": 1,
+										"student_index": 1,
+										"evaluation": [],
+										"file": null
+									}
+								]
+							}
+						]
+					}
+				]
+			}
 	describe('new', () => {
 
 		afterEach(() => {
@@ -28,7 +133,7 @@ describe('Lib - CoursePortfolio', () => {
 			const student_learning_outcomes = ["1"]
 			const section = 211
 
-			const mock1 = sinon.mock(Course)
+			const mock1 = sandbox.mock(Course)
 			mock1.expects('query').returns((() => {
 				const mock = {}
 				mock.where = () => mock
@@ -36,7 +141,7 @@ describe('Lib - CoursePortfolio', () => {
 				return mock
 			})())
 
-			const mock2 = sinon.mock(Portfolio)
+			const mock2 = sandbox.mock(Portfolio)
 			mock2.expects('query').returns((() => {
 				const mock = {}
 				mock.insert = () => ({id: 1, 
@@ -47,7 +152,7 @@ describe('Lib - CoursePortfolio', () => {
 				return mock
 			})())
 
-			const mock3 = sinon.mock(transaction)
+			const mock3 = sandbox.mock(transaction)
 			mock3.expects('start').returns((() => {
 				const mock = {}
 				mock.commit = () => {}
@@ -102,7 +207,7 @@ describe('Lib - CoursePortfolio', () => {
 			}
 
 			// It should look up the course number and find it valid
-			const mock1 = sinon.mock(Course)
+			const mock1 = sandbox.mock(Course)
 			mock1.expects('query').returns((() => {
 				const mock = {}
 				mock.where = () => mock
@@ -111,7 +216,7 @@ describe('Lib - CoursePortfolio', () => {
 			})())
 
 			// It should insert the portfolio and then try to do a $relatedQuery on that
-			const mock2 = sinon.mock(Portfolio)
+			const mock2 = sandbox.mock(Portfolio)
 			mock2.expects('query').returns((() => {
 				mock = {}
 				mock.insert = () => ({id: 1, 
@@ -124,7 +229,7 @@ describe('Lib - CoursePortfolio', () => {
 
 			// It should start a transaction and then roll it back.
 			const mock_trx = {rollback: sinon.spy()}
-			const mock3 = sinon.mock(transaction)
+			const mock3 = sandbox.mock(transaction)
 			mock3.expects('start').returns(mock_trx)
 
 			return (expect(course_portfolio.new(portfolio_details))
@@ -135,7 +240,79 @@ describe('Lib - CoursePortfolio', () => {
 					mock_trx.rollback.calledOnce))
 		})
 	})
+	
+	describe('updateReadOnly', () => {
+		afterEach(() => {
+			sandbox.restore()
+		})
 
+		it('Not expired', async () => {
+			// Arrange
+			const CoursePortfolio = require('../../../main/models/CoursePortfolio')
+			let portfolio_big_local = Object.assign({}, portfolio_big)
+			portfolio_big_local.expire_date = new Date(Date.parse('2000-01-23'))
+			const spy = sinon.stub().returns(true)
+			
+			// stub the CoursePortfolio.query() method
+			sandbox.stub(CoursePortfolio, "query").returns({
+				// stub the CoursePortfolio.query().findById() method
+				findById: sinon.stub().onCall(0).returns(
+					portfolio_big_local
+				).onCall(1).returns({
+					patch: spy
+				})	
+			})
+
+			// Act
+			await course_portfolio.updateReadOnly(1)
+
+			// Assert
+			expect(spy.calledOnce).to.be.true
+		})
+
+		it('Expired', async () => {
+			// Arrange
+			const CoursePortfolio = require('../../../main/models/CoursePortfolio')
+			let portfolio_big_local = Object.assign({}, portfolio_big)
+			portfolio_big_local.expire_date = new Date(Date.parse('9000-01-23'))
+			const spy = sinon.stub().returns(true)
+			
+			// stub the CoursePortfolio.query() method
+			sandbox.stub(CoursePortfolio, "query").returns({
+				// stub the CoursePortfolio.query().findById() method
+				findById: sinon.stub().onCall(0).returns(
+					portfolio_big_local
+				).onCall(1).returns({
+					patch: spy
+				})	
+			})
+
+			// Act
+			await course_portfolio.updateReadOnly(1)
+
+			// Assert
+			expect(spy.calledOnce).to.be.false
+
+		})
+
+		it('id does not exist', async () => {
+			// Arrange
+			const CoursePortfolio = require('../../../main/models/CoursePortfolio')
+			const spy = sinon.stub().returns(true)
+			
+			// stub the CoursePortfolio.query() method
+			sandbox.stub(CoursePortfolio, "query").returns({
+				// stub the CoursePortfolio.query().findById() method
+				findById: sinon.stub().returns(
+					undefined
+				)	
+			})
+
+			// Assert
+			await (expect(course_portfolio.updateReadOnly(1)).to.eventually.rejected)
+		})
+	})
+	
 	describe('get', () => {
 
 		// this is ran after each unit test
@@ -154,109 +331,7 @@ describe('Lib - CoursePortfolio', () => {
 				// stub the CoursePortfolio.query().eager() method
 				eager: sandbox.stub().returns({
 					// stub the CoursePortfolio.query().eager().findById() method
-					findById: sinon.stub().returns({
-						"id": 1,
-						"course_id": 1,
-						"instructor_id": 1,
-						"semester_term_id": 1,
-						"num_students": 5,
-						"section": 1,
-						"year": 2019,
-						"course": {
-							"id": 1,
-							"department_id": 1,
-							"number": 498,
-							"department": {
-								"id": 1,
-								"identifier": "cs",
-								"name": "Computer Science"
-							}
-						},
-						"instructor": {
-							"id": 1,
-							"linkblue_username": "user"
-						},
-						"semester": {
-							"id": 1,
-							"type": 1,
-							"value": "fall"
-						},
-						"outcomes": [
-							{
-								"id": 1,
-								"portfolio_id": 1,
-								"slo_id": 1,
-								"slo": {
-									"id": 1,
-									"department_id": 1,
-									"index": 2,
-									"description": "Design, implement, and evaluate a computing-based solution to meet a given set of computing requirements in the context of the program's discipline.",
-									"metrics": [
-										{
-											"id": 1,
-											"slo_id": 1,
-											"index": 1,
-											"name": "Identify and interpret client needs and design constraints",
-											"exceeds": "n/a",
-											"meets": "n/a",
-											"partially": "n/a",
-											"not": "n/a"
-										}
-									]
-								},
-								"artifacts": [
-									{
-										"id": 1,
-										"portfolio_slo_id": 1,
-										"index": 1,
-										"name": "_unset_",
-										"evaluations": [
-											{
-												"id": 1,
-												"artifact_id": 1,
-												"evaluation_index": 1,
-												"student_index": 1,
-												"evaluation": [],
-												"file": null
-											}
-										]
-									},
-									{
-										"id": 2,
-										"portfolio_slo_id": 1,
-										"index": 2,
-										"name": "_unset_",
-										"evaluations": [
-											{
-												"id": 6,
-												"artifact_id": 2,
-												"evaluation_index": 1,
-												"student_index": 1,
-												"evaluation": [],
-												"file": null
-											}
-										]
-									},
-									{
-										"id": 3,
-										"portfolio_slo_id": 1,
-										"index": 3,
-										"name": "_unset_",
-										"evaluations": [
-											{
-												"id": 11,
-												"artifact_id": 3,
-												"evaluation_index": 1,
-												"student_index": 1,
-												"evaluation": [],
-												"file": null
-											}
-										]
-									}
-								]
-							}
-						]
-					})
+					findById: sinon.stub().returns(portfolio_big)
 				})
 			})
 
