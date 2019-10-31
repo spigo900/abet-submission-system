@@ -430,8 +430,8 @@ exports.seed = knex => Promise.resolve((async () => {
 	])
 
 	await knex.raw('ALTER SEQUENCE course_id_seq RESTART WITH 2')
-	await knex.raw('ALTER SEQUENCE portfolio_id_seq RESTART WITH 3')
-	await knex.raw('ALTER SEQUENCE portfolio_slo_id_seq RESTART WITH 3')
+	await knex.raw('ALTER SEQUENCE portfolio_id_seq RESTART WITH 4')
+	await knex.raw('ALTER SEQUENCE portfolio_slo_id_seq RESTART WITH 4')
 	await knex.raw('ALTER SEQUENCE artifact_id_seq RESTART WITH 10')
 	await knex.raw('ALTER SEQUENCE artifact_evaluation_id_seq RESTART WITH 32')
 })())
