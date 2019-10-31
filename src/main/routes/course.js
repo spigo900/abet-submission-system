@@ -139,7 +139,6 @@ router.route('/')
 				return (100 * completion).toFixed(1)
 			}
 		}
-		console.log(portfolio_active.portfolio[0].outcomes[0].artifacts)
 		res.render('base_template', {
 			title: 'Course Portfolios',
 			body: mustache.render('course/index', {
