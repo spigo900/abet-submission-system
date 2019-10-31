@@ -22,9 +22,9 @@
 					{{course.number}}</td>
 				<td><span class="capitalize">{{semester.value}}</span></td>
 				<td>{{year}}</td>
-				<td>{{getNumArtifacts}}</td>
+				<td>{{portfolio_completion}}%</td>
 				{{#expire_date}}
-				<td>{{formatDate}}</td>
+				<td>{{format_date}}</td>
 				{{/expire_date}}
 				<td><a href="/course/{{id}}">edit <i class="material-icons">edit</i></a></td>
 			</tr>
