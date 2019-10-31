@@ -27,6 +27,8 @@ describe('Lib - CoursePortfolio', () => {
 			const num_students = 4
 			const student_learning_outcomes = ["1"]
 			const section = 211
+			const expire_date = new Date(Date.parse('3000-01-01'))
+		 	const read_only = false
 
 			const mock1 = sinon.mock(Course)
 			mock1.expects('query').returns((() => {
@@ -62,7 +64,9 @@ describe('Lib - CoursePortfolio', () => {
 				year,
 				num_students,
 				student_learning_outcomes,
-				section
+				section,
+				expire_date,
+				read_only
 			})
 
 			expect(portfolio).to.have.property('id')
@@ -80,7 +84,9 @@ describe('Lib - CoursePortfolio', () => {
 				year: "2019",
 				num_students: 4,
 				student_learning_outcomes: ["1"],
-				section: 2
+				section: 2,
+				expire_date: new Date(Date.parse('3000-01-01')),
+				read_only: false,
 			}
 
 			sinon.stub(course_portfolio, '_findCourseByNumber').returns(undefined)
@@ -98,7 +104,9 @@ describe('Lib - CoursePortfolio', () => {
 				year: "2019",
 				num_students: 4,
 				student_learning_outcomes: ["9001"],
-				section: 2
+				section: 2,
+				expire_date: new Date(Date.parse('3000-01-01')),
+				read_only: false,
 			}
 
 			// It should look up the course number and find it valid
