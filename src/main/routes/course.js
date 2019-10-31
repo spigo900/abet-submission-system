@@ -107,30 +107,44 @@ const course_new_page = async (res, department = false) => {
 	})
 }
 
+const REQUIRED_EVALUATIONS_PER_SLO = 3
+
 /* GET course home page */
 router.route('/')
 	.get(html.auth_wrapper(async (req, res, next) => {
-		const portfolio_active 			=  
-			{ portfolio: await Portfolio.query().eager('[course.department, semester,  outcomes.artifacts]'),
-			  formatDate:function(){
-			 	return this.toLocaleString('default', {month: 'short', day: 'numeric', year: 'numeric'} ); 			  
-			  },
-			  getNumArtifacts:function(){
-				let numArtifacts = 0;
-			  	for (let outcome in this.outcomes){
-					for (let artifact in this.outcomes[outcome].artifacts){
-						numArtifacts = numArtifacts + 1;
+		const portfolio_active = {
+			portfolio: await Portfolio.query().eager('[course.department, semester,  outcomes.artifacts]'),
+			format_date: function () {
+				return this.toLocaleString('default', {month: 'short', day: 'numeric', year: 'numeric'})
+			},
+			portfolio_completion: function () {
+				let num_evaluations = 0
+
+				for (let outcome in this.outcomes) {
+					// Count up to the minimum number of evaluations. If this SLO has
+					// more, we don't care.
+					let evaluations_for_outcome = 0
+					for (let _artifact in this.outcomes[outcome].artifacts) {
+						if (evaluations_for_outcome < REQUIRED_EVALUATIONS_PER_SLO) {
+							evaluations_for_outcome += 1
+						} else {
+							break
+						}
 					}
+					num_evaluations += evaluations_for_outcome
 				}
-				return numArtifacts;
-			  }
+
+				const expected_evaluations = REQUIRED_EVALUATIONS_PER_SLO * this.outcomes.length
+				const completion = num_evaluations / expected_evaluations
+				return (100 * completion).toFixed(1)
 			}
-		console.log(portfolio_active.portfolio[0].outcomes[0].artifacts);
+		}
+		console.log(portfolio_active.portfolio[0].outcomes[0].artifacts)
 		res.render('base_template', {
 			title: 'Course Portfolios',
-			body: mustache.render('course/index',
-				{
-				'portfolio_active': portfolio_active})
+			body: mustache.render('course/index', {
+				'portfolio_active': portfolio_active
+			})
 		})
 	}))
 
@@ -168,4 +182,4 @@ router.route('/:id')
 		}
 	}))
 
-module.exports = router;
+module.exports = router
