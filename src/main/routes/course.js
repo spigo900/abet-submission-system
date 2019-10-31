@@ -6,9 +6,9 @@ var router = express.Router();
 
 
 const Artifact = require('../models/CoursePortfolio/Artifact/index')
-
 const Department = require('../models/Department')
 const TermType = require('../models/TermType')
+const Portfolio = require('../models/CoursePortfolio')
 
 const course_manage_page = async (res, course_id) => {
 	let course_info = {
@@ -110,17 +110,27 @@ const course_new_page = async (res, department = false) => {
 /* GET course home page */
 router.route('/')
 	.get(html.auth_wrapper(async (req, res, next) => {
-		const artifacts_active 			=  
-			{ artifact: await Artifact.query().eager('[evaluations, owner.owner.[semester, course.department]]'),
+		const portfolio_active 			=  
+			{ portfolio: await Portfolio.query().eager('[course.department, semester,  outcomes.artifacts]'),
 			  formatDate:function(){
 			 	return this.toLocaleString('default', {month: 'short', day: 'numeric', year: 'numeric'} ); 			  
+			  },
+			  getNumArtifacts:function(){
+				let numArtifacts = 0;
+			  	for (let outcome in this.outcomes){
+					for (let artifact in this.outcomes[outcome].artifacts){
+						numArtifacts = numArtifacts + 1;
+					}
+				}
+				return numArtifacts;
 			  }
 			}
+		console.log(portfolio_active.portfolio[0].outcomes[0].artifacts);
 		res.render('base_template', {
 			title: 'Course Portfolios',
 			body: mustache.render('course/index',
 				{
-				'artifacts_active': artifacts_active})
+				'portfolio_active': portfolio_active})
 		})
 	}))
 

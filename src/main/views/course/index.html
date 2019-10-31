@@ -15,21 +15,21 @@
 				<th>Due Date</th>
 				<th></th>
 			</tr>
-			{{#artifacts_active}}
-			{{#artifact}}
+			{{#portfolio_active}}
+			{{#portfolio}}
 			<tr>
-				<td><span class="uppercase">{{owner.owner.course.department.identifier}}</span>
-					{{owner.owner.course.number}}</td>
-				<td><span class="capitalize">{{owner.owner.semester.value}}</span></td>
-				<td>{{owner.owner.year}}</td>
-				<td>{{evaluations.length}}</td>
-				{{#owner.owner.expire_date}}
+				<td><span class="uppercase">{{course.department.identifier}}</span>
+					{{course.number}}</td>
+				<td><span class="capitalize">{{semester.value}}</span></td>
+				<td>{{year}}</td>
+				<td>{{getNumArtifacts}}</td>
+				{{#expire_date}}
 				<td>{{formatDate}}</td>
-				{{/owner.owner.expire_date}}
+				{{/expire_date}}
 				<td><a href="/course/{{id}}">edit <i class="material-icons">edit</i></a></td>
 			</tr>
-			{{/artifact}}
-			{{/artifacts_active}}
+			{{/portfolio}}
+			{{/portfolio_active}}
 		</table>
 	</section>
 	<section class="archived_courses">
