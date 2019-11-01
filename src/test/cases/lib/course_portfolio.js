@@ -12,7 +12,7 @@ const sandbox = sinon.createSandbox();
 
 describe('Lib - CoursePortfolio', () => {
 	// Save variable for reuse
-	let portfolio_big = {
+	const portfolio_big = {
 				"id": 1,
 				"course_id": 1,
 				"instructor_id": 1,
@@ -144,7 +144,7 @@ describe('Lib - CoursePortfolio', () => {
 			const mock2 = sandbox.mock(Portfolio)
 			mock2.expects('query').returns((() => {
 				const mock = {}
-				mock.insert = () => ({id: 1, 
+				mock.insert = () => ({id: 1,
 					$relatedQuery: () => ({
 						insert: () => ({id: 1})
 					})
@@ -219,7 +219,7 @@ describe('Lib - CoursePortfolio', () => {
 			const mock2 = sandbox.mock(Portfolio)
 			mock2.expects('query').returns((() => {
 				mock = {}
-				mock.insert = () => ({id: 1, 
+				mock.insert = () => ({id: 1,
 			 		$relatedQuery: () => ({
 						insert: () => ({id: 1})
 					})
@@ -240,19 +240,19 @@ describe('Lib - CoursePortfolio', () => {
 					mock_trx.rollback.calledOnce))
 		})
 	})
-	
+
 	describe('updateReadOnly', () => {
 		afterEach(() => {
 			sandbox.restore()
 		})
 
-		it('Not expired', async () => {
+		it('it\'s expired', async () => {
 			// Arrange
 			const CoursePortfolio = require('../../../main/models/CoursePortfolio')
 			let portfolio_big_local = Object.assign({}, portfolio_big)
 			portfolio_big_local.expire_date = new Date(Date.parse('2000-01-23'))
 			const spy = sinon.stub().returns(true)
-			
+
 			// stub the CoursePortfolio.query() method
 			sandbox.stub(CoursePortfolio, "query").returns({
 				// stub the CoursePortfolio.query().findById() method
@@ -260,7 +260,7 @@ describe('Lib - CoursePortfolio', () => {
 					portfolio_big_local
 				).onCall(1).returns({
 					patch: spy
-				})	
+				})
 			})
 
 			// Act
@@ -270,13 +270,13 @@ describe('Lib - CoursePortfolio', () => {
 			expect(spy.calledOnce).to.be.true
 		})
 
-		it('Expired', async () => {
+		it('it\'s not expired', async () => {
 			// Arrange
 			const CoursePortfolio = require('../../../main/models/CoursePortfolio')
 			let portfolio_big_local = Object.assign({}, portfolio_big)
 			portfolio_big_local.expire_date = new Date(Date.parse('9000-01-23'))
 			const spy = sinon.stub().returns(true)
-			
+
 			// stub the CoursePortfolio.query() method
 			sandbox.stub(CoursePortfolio, "query").returns({
 				// stub the CoursePortfolio.query().findById() method
@@ -284,7 +284,7 @@ describe('Lib - CoursePortfolio', () => {
 					portfolio_big_local
 				).onCall(1).returns({
 					patch: spy
-				})	
+				})
 			})
 
 			// Act
@@ -299,20 +299,20 @@ describe('Lib - CoursePortfolio', () => {
 			// Arrange
 			const CoursePortfolio = require('../../../main/models/CoursePortfolio')
 			const spy = sinon.stub().returns(true)
-			
+
 			// stub the CoursePortfolio.query() method
 			sandbox.stub(CoursePortfolio, "query").returns({
 				// stub the CoursePortfolio.query().findById() method
 				findById: sinon.stub().returns(
 					undefined
-				)	
+				)
 			})
 
 			// Assert
-			await (expect(course_portfolio.updateReadOnly(1)).to.eventually.rejected)
+			await expect(course_portfolio.updateReadOnly(1)).to.eventually.be.rejected
 		})
 	})
-	
+
 	describe('get', () => {
 
 		// this is ran after each unit test
