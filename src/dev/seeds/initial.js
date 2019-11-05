@@ -151,7 +151,7 @@ exports.seed = knex => Promise.resolve((async () => {
 			section: 1,
 			year: 2016,
 			expire_date: '2016-12-20-T00:00:00',
-			read_only: true,
+			read_only: false,
 		},
 		{
 			id: 2,
