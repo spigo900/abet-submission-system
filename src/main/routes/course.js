@@ -193,8 +193,8 @@ router.route('/:id')
 				await course_new_page(res, req.body.department)
 			}
 		} else {
-			const portfolio = await course_portfolio_lib.updateReadOnly(req.params.id)
-			if (!portfolio.read_only) {
+			const read_only = await course_portfolio_lib.updateReadOnly(req.params.id)
+			if (!read_only) {
 				await course_manage_page(res, 499)
 			} else {
 				await course_read_only_error_page(res, req.params.id)
