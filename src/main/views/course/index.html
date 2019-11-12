@@ -7,7 +7,7 @@
 	<section class="active_courses">
 		<h2>Active Courses <i class="material-icons">help</i></h2>
 		<table>
-			<tr>				
+			<tr>
 				<th>Course</th>
 				<th>Semester</th>
 				<th>Year</th>
@@ -15,8 +15,8 @@
 				<th>Due Date</th>
 				<th></th>
 			</tr>
+			{{#portfolio_functions}}
 			{{#portfolio_active}}
-			{{#portfolio}}
 			<tr>
 				<td><span class="uppercase">{{course.department.identifier}}</span>
 					{{course.number}}</td>
@@ -28,7 +28,6 @@
 				{{/expire_date}}
 				<td><a href="/course/{{id}}">edit <i class="material-icons">edit</i></a></td>
 			</tr>
-			{{/portfolio}}
 			{{/portfolio_active}}
 		</table>
 	</section>
@@ -43,22 +42,19 @@
 				<th>Due Date</th>
 				<th></th>
 			</tr>
-			<tr>
-				<td>CS498</td>
-				<td>Fall</td>
-				<td>2019</td>
-				<td>8 / 12</td>
-				<td>Dec 5, 2019</td>
-				<td><a href="/course/123">view <i class="material-icons">pageview</i></a></td>
+				{{#portfolio_inactive}}
+				<td><span class="uppercase">{{course.department.identifier}}</span>
+					{{course.number}}</td>
+				<td><span class="capitalize">{{semester.value}}</span></td>
+				<td>{{year}}</td>
+				<td>{{portfolio_completion}}%</td>
+				{{#expire_date}}
+				<td>{{format_date}}</td>
+				{{/expire_date}}
+				<td><a href="/course/{{id}}">view <i class="material-icons">pageview</i></a></td>
 			</tr>
-			<tr>
-				<td>CS499</td>
-				<td>Fall</td>
-				<td>2019</td>
-				<td>12 / 12</td>
-				<td>Dec 5, 2019</td>
-				<td><a href="/course/123">view <i class="material-icons">pageview</i></a></td>
-			</tr>
+			{{/portfolio_inactive}}
+			{{/portfolio_functions}}
 		</table>
 	</section>
 </section>

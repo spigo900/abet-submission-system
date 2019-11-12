@@ -115,8 +115,12 @@ const REQUIRED_EVALUATIONS_PER_SLO = 3
 /* GET course home page */
 router.route('/')
 	.get(html.auth_wrapper(async (req, res, next) => {
-		const portfolio_active = {
-			portfolio: await Portfolio.query().eager('[course.department, semester,  outcomes.artifacts]'),
+		let portfolio_all = await Portfolio.query()
+		for (element of portfolio_all){
+			await course_portfolio_lib.updateReadOnly(element.id)
+		}
+		portfolio_all = await Portfolio.query().eager('[course.department, semester,  outcomes.artifacts]')
+		const portfolio_functions = {
 			format_date: function () {
 				return this.toLocaleString('default', {month: 'short', day: 'numeric', year: 'numeric'})
 			},
@@ -142,10 +146,15 @@ router.route('/')
 				return (100 * completion).toFixed(1)
 			}
 		}
+		const portfolio_active = portfolio_all.filter(element => !element.read_only)
+		const portfolio_inactive = portfolio_all.filter(element => element.read_only)
+		console.log(portfolio_inactive)
 		res.render('base_template', {
 			title: 'Course Portfolios',
 			body: mustache.render('course/index', {
-				'portfolio_active': portfolio_active
+				'portfolio_functions': portfolio_functions,
+				'portfolio_active': portfolio_active,
+				'portfolio_inactive' : portfolio_inactive,
 			})
 		})
 	}))
