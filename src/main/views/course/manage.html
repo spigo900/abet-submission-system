@@ -58,7 +58,7 @@
 						<td>{{index}}</td>
 						{{#evaluation}}
 						<td>
-							<select name="student-{{index}}-category-{{metric}}", {{#read_only}}disabled{{/read_only}}>
+							<select name="student-{{index}}-category-{{metric}}" {{#read_only}}disabled{{/read_only}}>
 								<option value="6">Exceeds</option>
 								<option value="7">Meets</option>
 								<option value="8">Partially</option>
@@ -69,13 +69,13 @@
 						</td>
 						{{/evaluation}}
 						<td>
-							<input name="student-1-submission" type="file", {{#read_only}}disabled{{/read_only}}></input>
+							<input name="student-1-submission" type="file" {{#read_only}}disabled{{/read_only}}></input>
 							attach <i class="material-icons">attachment</i>
 						</td>
 					</tr>
 					{{/evaluations}}
 				</table>
-				<input type="submit", {{#read_only}}disabled{{/read_only}}>
+				<input type="submit" {{#read_only}}disabled{{/read_only}}>
 			</form>
 		</div>
 		{{/artifacts}}
