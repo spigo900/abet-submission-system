@@ -134,4 +134,5 @@ module.exports.get = async (portfolio_id) => {
 }
 
 module.exports.calculateEvalsNeeded = (number_of_students) => {
+	return Math.min(number_of_students, Math.max(Math.floor(number_of_students/5), 10))
 }
