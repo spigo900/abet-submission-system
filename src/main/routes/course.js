@@ -82,9 +82,9 @@ const course_manage_page = async (res, course_id) => {
 		]
 	};
 
-	course_info.random_group = function() {
-		let sample = course_portfolio_lib.randomCourseSample(course_id, course_info.num_students)
-		return sample.sort().join(', ')
+	let sample = course_portfolio_lib.randomCourseSample(course_id, course_info.num_students)
+	course_info.random_student_index = function () {
+		return sample[this.index - 1]
 	}
 
 	res.render('base_template', {

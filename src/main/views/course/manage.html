@@ -39,12 +39,6 @@
 				{{/metrics}}
 			</tr>
 		</table>
-		<div class="container row">
-			<h4>Suggested Random Students</h4>
-		</div>
-		<div class="container row">
-			Try using these student indices (0-indexed): {{random_group}}
-		</div>
 		{{#artifacts}}
 		<div class="container row">
 			<h3>Artifact 1: {{name}}</h3>
@@ -52,6 +46,7 @@
 				<table>
 					<tr>
 						<th>Student Index</th>
+						<th>Random Student Index</th>
 						{{#metrics}}
 						<th>{{name}}</th>
 						{{/metrics}}
@@ -60,6 +55,7 @@
 					{{#evaluations}}
 					<tr>
 						<td>{{index}}</td>
+						<td>{{random_group_index}}</td>
 						{{#evaluation}}
 						<td>
 							<select name="student-{{index}}-category-{{metric}}">
