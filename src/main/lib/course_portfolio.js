@@ -117,6 +117,8 @@ module.exports.get = async (portfolio_id) => {
 		course_id: raw_portfolio.course_id,
 		instructor: raw_portfolio.instructor,
 		num_students: raw_portfolio.num_students,
+		read_only: raw_portfolio.read_only,
+		expire_date: raw_portfolio.expire_date,
 		outcomes: [],
 		course: {
 			department: raw_portfolio.course.department.identifier,

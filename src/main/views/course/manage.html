@@ -4,6 +4,8 @@
 		Course Summary
 	</div>
 	<div class="container row">
+		{{#course_info}}
+		{{#portfolio_current}}
 		{{#student_learning_outcomes}}
 		<h3>Student Learning Outcome {{index}}</h3>
 		<p>{{description}}</p>
@@ -56,7 +58,7 @@
 						<td>{{index}}</td>
 						{{#evaluation}}
 						<td>
-							<select name="student-{{index}}-category-{{metric}}">
+							<select name="student-{{index}}-category-{{metric}}", {{#read_only}}disabled{{/read_only}}>
 								<option value="6">Exceeds</option>
 								<option value="7">Meets</option>
 								<option value="8">Partially</option>
@@ -67,16 +69,18 @@
 						</td>
 						{{/evaluation}}
 						<td>
-							<input name="student-1-submission" type="file"></input>
+							<input name="student-1-submission" type="file", {{#read_only}}disabled{{/read_only}}></input>
 							attach <i class="material-icons">attachment</i>
 						</td>
 					</tr>
 					{{/evaluations}}
 				</table>
-				<input type="submit" />
+				<input type="submit", {{#read_only}}disabled{{/read_only}}>
 			</form>
 		</div>
 		{{/artifacts}}
 		{{/student_learning_outcomes}}
+		{{/portfolio_current}}
+		{{/course_info}}
 	</div>
 </section>

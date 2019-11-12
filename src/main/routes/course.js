@@ -80,10 +80,13 @@ const course_manage_page = async (res, course_id) => {
 			}
 		]
 	};
-
+	const portfolio_current = await course_portfolio_lib.get(course_id)
 	res.render('base_template', {
 		title: 'CS498 Course Portfolio',
-		body: mustache.render('course/manage', course_info)
+		body: mustache.render('course/manage', {
+			course_info,
+			portfolio_current
+		})
 	})
 }
 
