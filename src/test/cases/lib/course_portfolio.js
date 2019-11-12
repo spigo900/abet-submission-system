@@ -437,4 +437,58 @@ describe('Lib - CoursePortfolio', () => {
 
 	})
 
+	describe('calculateEvalsNeeded', () => {
+		afterEach(() => {
+			// this is needed to restore the CoursePortfolio model back to it's original state
+			// we don't want to break all future unit tests
+			sandbox.restore()
+		})
+
+		it('returns a number', () => {
+			expect(course_portfolio.calculateEvalsNeeded(0)).to.be.a('number')
+			expect(course_portfolio.calculateEvalsNeeded(1)).to.be.a('number')
+			expect(course_portfolio.calculateEvalsNeeded(59)).to.be.a('number')
+			expect(course_portfolio.calculateEvalsNeeded(60)).to.be.a('number')
+		})
+
+		it('returns zero with zero students', () => {
+			const n = 0
+			const needed = course_portfolio.calculateEvalsNeeded(n)
+
+			expect(needed).to.equal(n)
+		})
+
+		it('returns one with one student', () => {
+			const n = 1
+			const needed = course_portfolio.calculateEvalsNeeded(n)
+
+			expect(needed).to.equal(n)
+		})
+
+		it('returns nine with nine students', () => {
+			const n = 9
+			const needed = course_portfolio.calculateEvalsNeeded(n)
+
+			expect(needed).to.equal(n)
+		})
+
+		it('returns ten with eleven students', () => {
+			const needed = course_portfolio.calculateEvalsNeeded(11)
+
+			expect(needed).to.equal(10)
+		})
+
+		it('returns ten with fifty-four students', () => {
+			const needed = course_portfolio.calculateEvalsNeeded(54)
+
+			expect(needed).to.equal(10)
+		})
+
+		it('returns eleven with fifty-five students', () => {
+			const needed = course_portfolio.calculateEvalsNeeded(55)
+
+			expect(needed).to.equal(11)
+		})
+	})
+
 })
