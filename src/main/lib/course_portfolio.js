@@ -79,15 +79,18 @@ module.exports.new = async ({
 }
 
 module.exports.updateReadOnly = async (portfolio_id) => {
-	let raw_portfolio =  await Portfolio.query().findById(portfolio_id);
+	let raw_portfolio = await Portfolio.query().findById(portfolio_id)
 	if (raw_portfolio === undefined) {
 		throw new Error(`Portfolio id ${portfolio_id} does not exist`)
 	}
-	if (!raw_portfolio.read_only && new Date() >= raw_portfolio.expire_date) {
+	let read_only = raw_portfolio.read_only
+	if (!read_only && new Date() >= raw_portfolio.expire_date) {
 		await Portfolio.query().findById(portfolio_id).patch({
 			read_only: true
 		})
+		read_only = true
 	}
+	return read_only
 }
 
 module.exports.get = async (portfolio_id) => {

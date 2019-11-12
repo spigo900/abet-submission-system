@@ -150,6 +150,16 @@ router.route('/')
 		})
 	}))
 
+const course_read_only_error_page = async (res, portfolio_id) => {
+	res.status(403)
+	res.render('base_template', {
+		title: 'New Course Portfolio',
+		body: mustache.render('course/read_only_error', {
+			portfolio_id
+		})
+	})
+}
+
 /* GET course page */
 router.route('/:id')
 	.get(html.auth_wrapper(async (req, res, next) => {
@@ -183,7 +193,12 @@ router.route('/:id')
 				await course_new_page(res, req.body.department)
 			}
 		} else {
-			await course_manage_page(res, 499)
+			const read_only = await course_portfolio_lib.updateReadOnly(req.params.id)
+			if (!read_only) {
+				await course_manage_page(res, 499)
+			} else {
+				await course_read_only_error_page(res, req.params.id)
+			}
 		}
 	}))
 
