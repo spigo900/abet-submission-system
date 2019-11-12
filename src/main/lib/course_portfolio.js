@@ -132,3 +132,6 @@ module.exports.get = async (portfolio_id) => {
 
 	return portfolio
 }
+
+module.exports.calculateEvalsNeeded = (number_of_students) => {
+}
