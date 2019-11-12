@@ -42,8 +42,8 @@
 				<th>Due Date</th>
 				<th></th>
 			</tr>
+			{{#portfolio_inactive}}
 			<tr>
-				{{#portfolio_inactive}}
 				<td><span class="uppercase">{{course.department.identifier}}</span>
 					{{course.number}}</td>
 				<td><span class="capitalize">{{semester.value}}</span></td>
