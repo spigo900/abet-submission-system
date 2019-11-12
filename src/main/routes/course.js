@@ -161,8 +161,18 @@ router.route('/')
 const course_read_only_error_page = async (res, portfolio_id) => {
 	res.status(403)
 	res.render('base_template', {
-		title: 'New Course Portfolio',
+		title: 'Portfolio is Read Only',
 		body: mustache.render('course/read_only_error', {
+			portfolio_id
+		})
+	})
+}
+
+const course_does_not_exist_error_page = async (res, portfolio_id) => {
+	res.status(403)
+	res.render('base_template', {
+		title: 'Portfolio does not Exist',
+		body: mustache.render('course/does_not_exist_error', {
 			portfolio_id
 		})
 	})
@@ -174,7 +184,17 @@ router.route('/:id')
 		if (req.params.id === 'new') {
 			await course_new_page(res)
 		} else {
-			await course_manage_page(res, req.params.id)
+			try {
+				const course_exist = await course_portfolio_lib.get(req.params.id)
+				await course_manage_page(res, req.params.id)
+			}
+			catch(error) {
+				if (/Cannot read property/.exec( error )) {
+					await course_does_not_exist_error_page(res, req.params.id)
+				} else {
+					throw error
+				}
+			}
 		}
 	}))
 	.post(html.auth_wrapper(async (req, res, next) => {
