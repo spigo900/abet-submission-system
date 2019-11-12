@@ -15,6 +15,7 @@ const DEFAULT_PORTFOLIO_READ_ONLY_STATUS = false
 
 const course_manage_page = async (res, course_id) => {
 	let course_info = {
+		num_students: 15,
 		student_learning_outcomes: [
 			{
 				index: 1,
@@ -80,6 +81,11 @@ const course_manage_page = async (res, course_id) => {
 			}
 		]
 	};
+
+	course_info.random_group = function() {
+		let sample = course_portfolio_lib.randomCourseSample(course_id, course_info.num_students)
+		return sample.sort().join(', ')
+	}
 
 	res.render('base_template', {
 		title: 'CS498 Course Portfolio',
