@@ -171,8 +171,8 @@ exports.seed = knex => Promise.resolve((async () => {
 			semester_term_id: 1,
 			num_students: 2,
 			section: 3,
-			year: 2019,
-			expire_date: '2019-12-23-T00:00:00',
+			year: 2009,
+			expire_date: '2009-12-23-T00:00:00',
 			read_only: false,
 		}
 	])
