@@ -148,7 +148,6 @@ router.route('/')
 		}
 		const portfolio_active = portfolio_all.filter(element => !element.read_only)
 		const portfolio_inactive = portfolio_all.filter(element => element.read_only)
-		console.log(portfolio_inactive)
 		res.render('base_template', {
 			title: 'Course Portfolios',
 			body: mustache.render('course/index', {
