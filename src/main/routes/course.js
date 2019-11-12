@@ -171,7 +171,7 @@ const course_read_only_error_page = async (res, portfolio_id) => {
 const course_does_not_exist_error_page = async (res, portfolio_id) => {
 	res.status(403)
 	res.render('base_template', {
-		title: 'Portfolio does not Exist',
+		title: 'Portfolio Does Not Exist',
 		body: mustache.render('course/does_not_exist_error', {
 			portfolio_id
 		})
@@ -189,7 +189,7 @@ router.route('/:id')
 				await course_manage_page(res, req.params.id)
 			}
 			catch(error) {
-				if (/Cannot read property/.exec( error )) {
+				if (/Cannot read property '.*?' of undefined/.exec( error )) {
 					await course_does_not_exist_error_page(res, req.params.id)
 				} else {
 					throw error
