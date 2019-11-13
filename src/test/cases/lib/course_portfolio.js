@@ -20,7 +20,7 @@ describe('Lib - CoursePortfolio', () => {
 				"num_students": 5,
 				"section": 1,
 				"year": 2019,
-				"expire_date": new Date(Date.parse('2019-12-34')),
+				"expire_date": new Date(Date.parse('3000-01-01')),
 				"read_only": false,
 				"course": {
 					"id": 1,
@@ -350,6 +350,8 @@ describe('Lib - CoursePortfolio', () => {
 			expect(portfolio).to.deep.equal({
 				"portfolio_id": 1,
 				"course_id": 1,
+				"read_only": false,
+				"expire_date": new Date(Date.parse('3000-01-01')),
 				"instructor": {
 					"id": 1,
 					"linkblue_username": "user"
