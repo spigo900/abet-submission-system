@@ -15,6 +15,7 @@ const DEFAULT_PORTFOLIO_READ_ONLY_STATUS = false
 
 const course_manage_page = async (res, course_id) => {
 	let course_info = {
+		num_students: 15,
 		student_learning_outcomes: [
 			{
 				index: 1,
@@ -80,7 +81,13 @@ const course_manage_page = async (res, course_id) => {
 			}
 		]
 	};
+
 	const portfolio_current = await course_portfolio_lib.get(course_id)
+	let sample = course_portfolio_lib.randomCourseSample(course_id, course_info.num_students)
+	course_info.random_student_index = function () {
+		return sample[this.index - 1]
+	}
+
 	res.render('base_template', {
 		title: 'CS498 Course Portfolio',
 		body: mustache.render('course/manage', {

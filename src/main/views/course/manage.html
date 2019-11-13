@@ -48,6 +48,7 @@
 				<table>
 					<tr>
 						<th>Student Index</th>
+						<th>Random Student Index</th>
 						{{#metrics}}
 						<th>{{name}}</th>
 						{{/metrics}}
@@ -56,6 +57,7 @@
 					{{#evaluations}}
 					<tr>
 						<td>{{index}}</td>
+						<td>{{random_group_index}}</td>
 						{{#evaluation}}
 						<td>
 							<select name="student-{{index}}-category-{{metric}}" {{#read_only}}disabled{{/read_only}}>

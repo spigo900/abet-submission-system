@@ -141,3 +141,56 @@ module.exports.get = async (portfolio_id) => {
 module.exports.calculateEvalsNeeded = (number_of_students) => {
 	return Math.min(number_of_students, Math.max(Math.floor(number_of_students/5), 10))
 }
+
+// Xorshift-based random number generator.
+//
+// Based on example code written in C from
+// https://en.wikipedia.org/wiki/Xorshift
+//
+// We need this because JavaScript's random number generator doesn't allow you
+// to seed it.
+const DEFAULT_SEED = 1153528
+const RESTART_NUMBER = 3835659
+class MyRandomGenerator {
+	constructor(seed) {
+		// Set to a default value if needed
+		if (seed === undefined) {
+			seed = DEFAULT_SEED
+		}
+
+		this.seed = seed
+	}
+
+	next() {
+		let next = this.seed
+		next ^= Math.abs(next << 13)
+		next ^= next >>> 17
+		next ^= Math.abs(next << 5)
+		if (next === 0) {
+			next = RESTART_NUMBER
+		}
+		this.seed = next
+		return next
+	}
+}
+
+const randomCourseSample = (seed, num_students) => {
+	const evals_needed = module.exports.calculateEvalsNeeded(num_students)
+
+	// Should be deterministically generated based on the portfolio ID.
+	rng = new MyRandomGenerator(seed)
+	indices = []
+	while (indices.length < evals_needed) {
+		// Assuming the student indices are 0-indexed. CS professors!
+		// const index = rng.next() % num_students
+		const index = rng.next() % num_students
+
+		// Do sampling with replacement
+		if (indices.indexOf(index) >= 0) {
+			continue
+		}
+		indices.push(index)
+	}
+	return indices
+}
+module.exports.randomCourseSample = randomCourseSample
