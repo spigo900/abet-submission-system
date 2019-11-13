@@ -233,7 +233,7 @@ router.route('/:id')
 		} else {
 			const read_only = await course_portfolio_lib.updateReadOnly(req.params.id)
 			if (!read_only) {
-				await course_manage_page(res, 499)
+				await course_manage_page(res, req.params.id)
 			} else {
 				await course_read_only_error_page(res, req.params.id)
 			}
